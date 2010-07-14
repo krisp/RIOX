@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Formatters.Soap;
 using System.Threading;
 
 namespace RIXox
@@ -30,8 +30,8 @@ namespace RIXox
         public void SendCommand(RIXCommand command)
         {
             NetworkStream ns = _client.GetStream();
-            BinaryFormatter bf = new BinaryFormatter();
-            bf.Serialize(ns, command);
+            SoapFormatter sf = new SoapFormatter();
+            sf.Serialize(ns, command);
             ns.Flush();
         }
 
@@ -39,13 +39,13 @@ namespace RIXox
         {
             TcpClient client = (TcpClient)tcpClient;
             NetworkStream ns = client.GetStream();
-            BinaryFormatter bf = new BinaryFormatter();
+            SoapFormatter sf = new SoapFormatter();
             
             while (!_stopThreads)
             {
                 if (ns.DataAvailable)
                 {
-                    Object o = bf.Deserialize(ns);
+                    Object o = sf.Deserialize(ns);
                     ns.Flush();
                     ObjectReceivedEvent(this, new ObjectReceivedEventArgs(o));
                 }

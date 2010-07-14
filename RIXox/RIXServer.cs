@@ -3,7 +3,7 @@ using System.Collections;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Formatters.Soap;
 
 namespace RIXox
 {
@@ -127,8 +127,8 @@ namespace RIXox
             }
             Console.WriteLine("SendObjectToClientHandle: " + ch.TcpClient.Client.RemoteEndPoint + " (" + ch.ClientId + ")");
             Console.WriteLine(DataObject);
-            BinaryFormatter bf = new BinaryFormatter();
-            bf.Serialize(ch.TcpClient.GetStream(), DataObject);
+            SoapFormatter sf = new SoapFormatter();
+            sf.Serialize(ch.TcpClient.GetStream(), DataObject);
             ch.TcpClient.GetStream().Flush();                   
         }
 
@@ -143,7 +143,7 @@ namespace RIXox
         private void ClientThread(object o)
         {
             ClientHandle ch = (ClientHandle) o;
-            BinaryFormatter bf = new BinaryFormatter();
+            SoapFormatter sf = new SoapFormatter();
             NetworkStream ns = ch.TcpClient.GetStream();
             
             while(!_stopThreads)
@@ -152,7 +152,7 @@ namespace RIXox
                 {
                     if (ns.DataAvailable)
                     {
-                        RIXCommand r = (RIXCommand)bf.Deserialize(ns);
+                        RIXCommand r = (RIXCommand)sf.Deserialize(ns);
                         ns.Flush();
                         CommandEventArgs cea = new CommandEventArgs(r.Command, r.Data);
                         CommandEvent(this, cea);
