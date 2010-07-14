@@ -9,15 +9,17 @@ namespace RIXox
     {
         public event ObjectReceivedEventHandler ObjectReceivedEvent;
 
-        private TcpClient _client;      
+        private TcpClient _client;
+        private Thread _clientThread;
+        private bool _stopThreads;
 
         public RIXClient(String hostname, int port)
         {
             try
             {
                 _client = new TcpClient(hostname, port);     
-                Thread t = new Thread(ClientThread);
-
+                _clientThread = new Thread(ClientThread);
+                _clientThread.Start(_client);
             }
             catch (Exception e)
             {                
@@ -38,13 +40,22 @@ namespace RIXox
             TcpClient client = (TcpClient)tcpClient;
             NetworkStream ns = client.GetStream();
             BinaryFormatter bf = new BinaryFormatter();
-
-            if(ns.DataAvailable)
+            
+            while (!_stopThreads)
             {
-                Object o = bf.Deserialize(ns);
-                ns.Flush();
-                ObjectReceivedEvent(this, new ObjectReceivedEventArgs(o));
+                if (ns.DataAvailable)
+                {
+                    Object o = bf.Deserialize(ns);
+                    ns.Flush();
+                    ObjectReceivedEvent(this, new ObjectReceivedEventArgs(o));
+                }
             }
+        }
+
+        public void Close()
+        {
+            _stopThreads = true;
+            _client.Close();
         }
 
         public delegate void ObjectReceivedEventHandler(object o, ObjectReceivedEventArgs e);

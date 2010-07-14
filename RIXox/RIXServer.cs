@@ -10,23 +10,27 @@ namespace RIXox
     public class RIXServer
     {
         public event CommandEventHandler CommandEvent;
-        public event ObjectPollEventHandler ObjectPollEvent;
+       
         public int ClientCount { get { return _clients.Count; } }
         public bool IsStarted { get; private set; }
         public Object DataObject { get; set; }
-        public int ObjectPollInterval { get; set; }
+        public int ObjectUpdateInterval { get; set; }
+        public bool SendUpdatesAtInterval { get; set; }
 
-        private Object _lastDataObject;
+        private Thread _listenThread;
         private TcpListener _listener;
         private ArrayList _clients;
         private bool _stopThreads;
-        private Timer _objectPollTimer;
+        private int _clientIdNext;
+        private Timer _objectUpdateTimer;
 
-        public RIXServer(Object DataObject, IPAddress bindAddress, int port)
+        public RIXServer(Object dataObject, IPAddress bindAddress, int port)
         {
             _clients = new ArrayList();
-            ObjectPollInterval = 500;
-            _objectPollTimer = new Timer(ObjectPollTick, null, 0, ObjectPollInterval);
+            _clientIdNext = 0;
+            DataObject = dataObject;
+            ObjectUpdateInterval = 500; // initially 500ms
+            SendUpdatesAtInterval = true;
 
             try
             {
@@ -45,8 +49,10 @@ namespace RIXox
             {
                 _stopThreads = false;
                 _listener.Start();
-                Thread t = new Thread(ListenThread);
-                t.Start();
+                _listenThread = new Thread(ListenThread);
+                _listenThread.Start();
+                if(SendUpdatesAtInterval)
+                    _objectUpdateTimer = new Timer(TTick, null, 0, ObjectUpdateInterval);
                 IsStarted = true;
             }
             catch (Exception e)
@@ -56,15 +62,15 @@ namespace RIXox
         }
 
         public void Close()
-        {
-            _stopThreads = true;
+        {            
+            _stopThreads = true;            
             IsStarted = false;
+            _listener.Stop();
             foreach(ClientHandle ch in _clients)
             {
                 try
                 {
                     ch.TcpClient.Close();
-                    ch.Thread.Abort();                    
                 }
                 catch(Exception e)
                 {
@@ -75,16 +81,12 @@ namespace RIXox
         #endregion
 
         #region Control Functions
-        private void SendObjectUpdate()
+        public void SendObjectUpdate()
         {
-            if (!DataObject.Equals(_lastDataObject))
-            {
-                foreach (ClientHandle ch in _clients)
-                {
-                    SendObjectToClientHandle(ch);
-                }
-            }
-            _lastDataObject = DataObject;
+             foreach (ClientHandle ch in _clients)
+             {
+                SendObjectToClientHandle(ch);
+             }
         }
         #endregion
 
@@ -93,12 +95,27 @@ namespace RIXox
         {
             while(!_stopThreads)
             {
-                TcpClient c = _listener.AcceptTcpClient();                
-                Thread t = new Thread(ClientThread);
-                ClientHandle ch = new ClientHandle(t,c);
-                t.Start(ch);
-                SendObjectToClientHandle(ch);
-                _clients.Add(ch);
+                try
+                {
+                    TcpClient c = _listener.AcceptTcpClient();
+                    Console.WriteLine("Client connected: " + c.Client.RemoteEndPoint); 
+                    Thread t = new Thread(ClientThread);
+                    ClientHandle ch = new ClientHandle(t, c, _clientIdNext++);
+                    t.Start(ch);
+                    SendObjectToClientHandle(ch);
+                    _clients.Add(ch);
+
+                }
+                catch (SocketException se)
+                {
+                    if(se.ErrorCode == 10004)
+                        return;                    
+                    throw new Exception(se.Message, se);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message, e);
+                }
             }
         }
 
@@ -108,10 +125,19 @@ namespace RIXox
             {
                 throw new Exception("Attempted SendObjectToClientHandle with no DataObject");
             }
-
+            Console.WriteLine("SendObjectToClientHandle: " + ch.TcpClient.Client.RemoteEndPoint + " (" + ch.ClientId + ")");
+            Console.WriteLine(DataObject);
             BinaryFormatter bf = new BinaryFormatter();
             bf.Serialize(ch.TcpClient.GetStream(), DataObject);
-            ch.TcpClient.GetStream().Flush();
+            ch.TcpClient.GetStream().Flush();                   
+        }
+
+        private void TTick(object o)
+        {
+            foreach(ClientHandle ch in _clients)
+            {
+                SendObjectToClientHandle(ch);
+            }
         }
 
         private void ClientThread(object o)
@@ -122,25 +148,28 @@ namespace RIXox
             
             while(!_stopThreads)
             {
-                if(ns.DataAvailable)
+                try
                 {
-                    RIXCommand r = (RIXCommand) bf.Deserialize(ns);
-                    ns.Flush();
-                    CommandEventArgs cea = new CommandEventArgs(r.Command, r.Data);
-                    CommandEvent(this, cea);
+                    if (ns.DataAvailable)
+                    {
+                        RIXCommand r = (RIXCommand)bf.Deserialize(ns);
+                        ns.Flush();
+                        CommandEventArgs cea = new CommandEventArgs(r.Command, r.Data);
+                        CommandEvent(this, cea);
+                    }
+                }
+                catch (ObjectDisposedException)
+                {
+                    // do nothing
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message, e);
                 }
             }
 
             ch.TcpClient.Close();
             ch.Thread.Abort();
-        }
-
-        private void ObjectPollTick(object o)
-        {
-            // remind the program to update the object
-            ObjectPollEvent(this, new EventArgs());
-            // send out the updates
-            SendObjectUpdate();
         }
         #endregion
 
@@ -164,15 +193,15 @@ namespace RIXox
         {
             public Thread Thread { get; private set; }
             public TcpClient TcpClient { get; private set; }
-            public ClientHandle(Thread t, TcpClient c)
+            public int ClientId { get; private set; }
+            public ClientHandle(Thread t, TcpClient c, int id)
             {
                 Thread = t;
                 TcpClient = c;
+                ClientId = id;
             }
             public ClientHandle() { }
-        }
-
-        public delegate void ObjectPollEventHandler(object sender, EventArgs e);        
+        }        
 #endregion
     }
 }
