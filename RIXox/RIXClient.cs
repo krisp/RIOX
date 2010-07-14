@@ -43,11 +43,18 @@ namespace RIXox
             
             while (!_stopThreads)
             {
-                if (ns.DataAvailable)
+                try
                 {
-                    Object o = sf.Deserialize(ns);
-                    ns.Flush();
-                    ObjectReceivedEvent(this, new ObjectReceivedEventArgs(o));
+                    if (ns.DataAvailable)
+                    {
+                        Object o = sf.Deserialize(ns);
+                        ns.Flush();
+                        ObjectReceivedEvent(this, new ObjectReceivedEventArgs(o));
+                    }                
+                }
+                catch (Exception)
+                {                    
+                    // do nothing
                 }
             }
         }

@@ -83,9 +83,14 @@ namespace RIXox
         #region Control Functions
         public void SendObjectUpdate()
         {
+             if(_clients.Count == 0)
+                 return;
+
              foreach (ClientHandle ch in _clients)
              {
-                SendObjectToClientHandle(ch);
+                 if (ch.IsDead)
+                     continue;
+                 SendObjectToClientHandle(ch);
              }
         }
         #endregion
@@ -103,8 +108,7 @@ namespace RIXox
                     ClientHandle ch = new ClientHandle(t, c, _clientIdNext++);
                     t.Start(ch);
                     SendObjectToClientHandle(ch);
-                    _clients.Add(ch);
-
+                    _clients.Add(ch);                    
                 }
                 catch (SocketException se)
                 {
@@ -125,11 +129,37 @@ namespace RIXox
             {
                 throw new Exception("Attempted SendObjectToClientHandle with no DataObject");
             }
+
+            if(ch.TcpClient.Connected == false)
+            {
+                // client is disconnected, remove it from the list
+                Console.WriteLine("Client is disconnected, marking for removal.");
+                ch.IsDead = true;
+                return;
+            }
+
             Console.WriteLine("SendObjectToClientHandle: " + ch.TcpClient.Client.RemoteEndPoint + " (" + ch.ClientId + ")");
             Console.WriteLine(DataObject);
             SoapFormatter sf = new SoapFormatter();
-            sf.Serialize(ch.TcpClient.GetStream(), DataObject);
-            ch.TcpClient.GetStream().Flush();                   
+            try
+            {
+                sf.Serialize(ch.TcpClient.GetStream(), DataObject);
+                ch.TcpClient.GetStream().Flush();                                   
+            }
+            catch (System.IO.IOException)
+            {
+                // IO/socket exceptions mean that the intended client is probably dead, so lets remove
+                // the client from our list.
+                ch.IsDead = true;
+            }
+            catch (SocketException)
+            {
+                ch.IsDead = true;
+            }
+            catch(Exception e)
+            {
+                throw new Exception("Error sending object to client: "+ e.Message, e);   
+            }
         }
 
         private void TTick(object o)
@@ -194,13 +224,15 @@ namespace RIXox
             public Thread Thread { get; private set; }
             public TcpClient TcpClient { get; private set; }
             public int ClientId { get; private set; }
+            public bool IsDead { get; set; }
             public ClientHandle(Thread t, TcpClient c, int id)
             {
                 Thread = t;
                 TcpClient = c;
                 ClientId = id;
+                IsDead = false;
             }
-            public ClientHandle() { }
+            public ClientHandle() { IsDead = false; }
         }        
 #endregion
     }
