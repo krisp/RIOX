@@ -9,6 +9,15 @@ namespace RIXox
     {
         public event ObjectReceivedEventHandler ObjectReceivedEvent;
 
+        public bool IsConnected { 
+            get 
+            { 
+                if(_client != null) 
+                    return _client.Connected;
+                return false; 
+            } 
+        }
+
         private TcpClient _client;
         private Thread _clientThread;
         private bool _stopThreads;
