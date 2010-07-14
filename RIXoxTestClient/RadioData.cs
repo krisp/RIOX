@@ -9,14 +9,17 @@ namespace RIXoxTestClient
     public class RadioData : ISerializable, INotifyPropertyChanged
     {
         private string _vfoa;
+        private string _vfob;
+        private bool _mox;
+        private string _mode;
 
         public string vfoa { get { return _vfoa; } set { _vfoa = value; NotifyPropertyChanged("vfoa"); } }
-        public string vfob { get; set; }
+        public string vfob { get { return _vfob; } set { _vfob = value; NotifyPropertyChanged("vfob"); } }
         public string rawmode { get; set; }
         public string dspfilters { get; set; }
-        public bool mox { get; set; }
+        public bool mox { get { return _mox; } set { _mox = value; NotifyPropertyChanged("mox"); } }
 
-        public string Mode { get; set; }
+        public string Mode { get { return _mode; } set { _mode = value; NotifyPropertyChanged("mode"); } }
         public string Band { get; set; }
         public string DisplayMode { get; set; }
         public string AGC { get; set; }
