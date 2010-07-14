@@ -8,9 +8,13 @@ namespace RIXoxTestClient
     [Serializable()]
     public class RadioData : ISerializable, INotifyPropertyChanged
     {
+        [NonSerialized]
         private string _vfoa;
+        [NonSerialized]
         private string _vfob;
+        [NonSerialized]
         private bool _mox;
+        [NonSerialized]
         private string _mode;
 
         public string vfoa { get { return _vfoa; } set { _vfoa = value; NotifyPropertyChanged("vfoa"); } }
