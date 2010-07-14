@@ -33,7 +33,7 @@ namespace RIXoxTestServer
         private void button1_Click(object sender, EventArgs e)
         {
             _server = new RIXServer(_radio, System.Net.IPAddress.Loopback, 1234);            
-            _server.CommandEvent += _server_CommandEvent;
+            _server.CommandEvent += ServerCommandEvent;
             _radio.PropertyChanged += RadioPropertyChanged;
             _server.SendUpdatesAtInterval = false;
             _server.Start();
@@ -47,7 +47,7 @@ namespace RIXoxTestServer
             _server.SendObjectUpdate();
         }
 
-        void _server_CommandEvent(object sender, RIXServer.CommandEventArgs e)
+        void ServerCommandEvent(object sender, RIXServer.CommandEventArgs e)
         {
             // command received
             Console.WriteLine("CommandEvent fired");
