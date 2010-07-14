@@ -44,6 +44,7 @@ namespace RIXoxTestClient
         {
         }
 
+        // This is for deserialization
         public RadioData(SerializationInfo info, StreamingContext context)
         {
             vfoa = (string)info.GetValue("vfoa", typeof (string));
@@ -52,6 +53,7 @@ namespace RIXoxTestClient
             mox = (bool)info.GetValue("mox", typeof(bool));
         }
 
+        // this is for serialization
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("vfoa", vfoa);
@@ -60,6 +62,7 @@ namespace RIXoxTestClient
             info.AddValue("mox", mox);            
         }
 
+        // this is just for testing
         public override String ToString()
         {
             return "VFOA: " + vfoa + " VFOB: " + vfob;
