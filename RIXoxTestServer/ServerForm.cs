@@ -51,6 +51,8 @@ namespace RIXoxTestServer
         {
             // command received
             Console.WriteLine("CommandEvent fired");
+            if (e.Command == "VFOA")
+                Invoke((MethodInvoker)delegate { txtVFOA.Text = e.Data; });
         }
 
         private void txtVFOA_TextChanged(object sender, EventArgs e)

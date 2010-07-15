@@ -53,5 +53,10 @@ namespace RIXoxTestClient
             if(_client != null)
                 _client.Close();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            _client.SendCommand(new RIXCommand("VFOA", txtVFOA.Text, 0));
+        }
     }
 }

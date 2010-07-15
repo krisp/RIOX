@@ -39,6 +39,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.radioDataBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.radioDataBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -122,11 +123,22 @@
             // 
             this.radioDataBindingSource.DataSource = typeof(RIXoxTestClient.RadioData);
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(141, 145);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(131, 23);
+            this.button2.TabIndex = 18;
+            this.button2.Text = "Send updates to server";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // ClientForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.cbMox);
             this.Controls.Add(this.txtMode);
@@ -158,6 +170,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.BindingSource radioDataBindingSource;
+        private System.Windows.Forms.Button button2;
     }
 }
 
