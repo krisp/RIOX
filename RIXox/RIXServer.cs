@@ -184,7 +184,7 @@ namespace RIXox
                     {
                         RIXCommand r = (RIXCommand)sf.Deserialize(ns);
                         ns.Flush();
-                        CommandEventArgs cea = new CommandEventArgs(r.Command, r.Data);
+                        CommandEventArgs cea = new CommandEventArgs(r.Command, r.Data, ch.ClientId );
                         CommandEvent(this, cea);
                     }
                 }
@@ -209,11 +209,13 @@ namespace RIXox
         {
             public String Command { get; set; }
             public String Data { get; set; }
+            public int ClientId { get; set; }
 
-            public CommandEventArgs(String Command, String Data)
+            public CommandEventArgs(String command, String data, int clientId)
             {
-                this.Command = Command;
-                this.Data = Data;
+                Command = command;
+                Data = data;
+                ClientId = clientId;
             }
 
             public CommandEventArgs() { }

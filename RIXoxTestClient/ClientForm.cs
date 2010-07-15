@@ -56,7 +56,7 @@ namespace RIXoxTestClient
 
         private void button2_Click(object sender, EventArgs e)
         {
-            _client.SendCommand(new RIXCommand("VFOA", txtVFOA.Text, 0));
+            _client.SendCommand(new RIXCommand("VFOA", txtVFOA.Text));
         }
     }
 }
