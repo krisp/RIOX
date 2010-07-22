@@ -16,7 +16,7 @@ namespace RIXoxTestClient
 
         private void button1_Click(object sender, EventArgs e)
         {
-            _client = new RIXClient("localhost", 1234);
+            _client = new RIXClient(typeof(RadioData),"localhost", 1234);
             _client.ObjectReceivedEvent += ClientObjectReceivedEvent;
         }
 
