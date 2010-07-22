@@ -18,17 +18,20 @@ namespace RIXox
             } 
         }
 
+        public Type DataType { get; set; }
+
         private TcpClient _client;
         private Thread _clientThread;
         private bool _stopThreads;
 
-        public RIXClient(String hostname, int port)
+        public RIXClient(Type dataType, String hostname, int port)
         {
             try
             {
                 _client = new TcpClient(hostname, port);     
                 _clientThread = new Thread(ClientThread);
                 _clientThread.Start(_client);
+                DataType = dataType;
             }
             catch (Exception e)
             {                
@@ -57,13 +60,17 @@ namespace RIXox
                     if (ns.DataAvailable)
                     {
                         Object o = sf.Deserialize(ns);
+                        if(o.GetType() != DataType)
+                        {
+                            throw new Exception("Object received does not match DataType");
+                        }
                         ns.Flush();
                         ObjectReceivedEvent(this, new ObjectReceivedEventArgs(o));
                     }                
                 }
-                catch (Exception)
+                catch (Exception e)
                 {                    
-                    // do nothing
+                    throw new Exception("Object deserialization error",e);
                 }
             }
         }
