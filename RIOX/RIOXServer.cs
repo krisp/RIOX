@@ -155,6 +155,7 @@ namespace RIOX
                 {
                     throw new Exception(e.Message, e);
                 }
+                Thread.Sleep(1);
             }
         }
 
@@ -264,7 +265,8 @@ namespace RIOX
                 catch (Exception e)
                 {
                     throw new Exception(e.Message, e);
-                }                
+                }
+                Thread.Sleep(1);
             }
 
             // clean up now that the thread is closing

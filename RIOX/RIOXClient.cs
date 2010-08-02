@@ -72,6 +72,7 @@ namespace RIOX
                 {                    
                     throw new Exception("Object deserialization error",e);
                 }
+                Thread.Sleep(1);
             }
         }
 
