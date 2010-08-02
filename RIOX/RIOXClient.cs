@@ -46,7 +46,7 @@ namespace RIOX
             sf.Serialize(ns, command);
             ns.Flush();
         }
-
+                
         private void ClientThread(object tcpClient)
         {
             TcpClient client = (TcpClient)tcpClient;
@@ -72,7 +72,8 @@ namespace RIOX
                 {                    
                     throw new Exception("Object deserialization error",e);
                 }
-                Thread.Sleep(1);
+        //        Thread.Sleep(1);
+                
             }
         }
 

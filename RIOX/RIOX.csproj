@@ -8,8 +8,8 @@
     <ProjectGuid>{EB2C16E8-EC7C-46C2-BC75-3716315D7378}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RIXox</RootNamespace>
-    <AssemblyName>RIXox</AssemblyName>
+    <RootNamespace>RIOX</RootNamespace>
+    <AssemblyName>RIOX</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
