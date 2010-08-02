@@ -44,7 +44,7 @@ namespace RIXox
             catch (Exception e)
             {
                 throw new Exception("Unable to create RIX server: " + e.Message, e);
-            }
+            }            
         }
 
         #region Methods
@@ -66,6 +66,7 @@ namespace RIXox
                     _objectUpdateTimer = new Timer(TTick, null, 0, ObjectUpdateInterval);
                 // mark our status as started
                 IsStarted = true;
+                // create the client garbage collection timer. it purges dead clients from the client list.
             }
             catch (Exception e)
             {                
@@ -116,6 +117,7 @@ namespace RIXox
                  // send the object to the client handle
                  SendObjectToClientHandle(ch);
              }
+            ClientGC();
         }
         #endregion
 
@@ -208,6 +210,17 @@ namespace RIXox
             foreach(ClientHandle ch in _clients)
             {
                 SendObjectToClientHandle(ch);
+            }
+            ClientGC();
+        }
+
+        private void ClientGC()
+        {
+            for(int i = _clients.Count - 1; i >= 0; i--)
+            {
+                ClientHandle o = (ClientHandle)_clients[i];
+                if(o.IsDead)
+                    _clients.Remove(o);                
             }
         }
 
