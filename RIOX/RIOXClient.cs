@@ -3,9 +3,9 @@ using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Threading;
 
-namespace RIXox
+namespace RIOX
 {
-    public class RIXClient
+    public class RIOXClient
     {
         public event ObjectReceivedEventHandler ObjectReceivedEvent;
 
@@ -24,7 +24,7 @@ namespace RIXox
         private Thread _clientThread;
         private bool _stopThreads;
 
-        public RIXClient(Type dataType, String hostname, int port)
+        public RIOXClient(Type dataType, String hostname, int port)
         {
             try
             {
@@ -35,11 +35,11 @@ namespace RIXox
             }
             catch (Exception e)
             {                
-                throw new Exception("Could not connect to RIXServer", e);
+                throw new Exception("Could not connect to RIOXServer", e);
             }            
         }
 
-        public void SendCommand(RIXCommand command)
+        public void SendCommand(RIOXCommand command)
         {
             NetworkStream ns = _client.GetStream();
             SoapFormatter sf = new SoapFormatter();

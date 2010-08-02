@@ -5,9 +5,9 @@ using System.Net;
 using System.Threading;
 using System.Runtime.Serialization.Formatters.Soap;
 
-namespace RIXox
+namespace RIOX
 {
-    public class RIXServer
+    public class RIOXServer
     {
         public event CommandEventHandler CommandEvent;
        
@@ -25,7 +25,7 @@ namespace RIXox
         private Timer _objectUpdateTimer;        
 
         // Constructor. Requires a serializable dataObject, and ip address to bind to, and a port to listen on.
-        public RIXServer(Object dataObject, IPAddress bindAddress, int port)
+        public RIOXServer(Object dataObject, IPAddress bindAddress, int port)
         {
             // init the client list
             _clients = new ArrayList();
@@ -104,19 +104,19 @@ namespace RIXox
         // Send out an object to all of the clients
         public void SendObjectUpdate()
         {
-             // dont do anything if we have no clients
-             if(_clients.Count == 0)
-                 return;
+            // dont do anything if we have no clients
+            if(_clients.Count == 0)
+                return;
             
-             // iterate the list of clients
-             foreach (ClientHandle ch in _clients)
-             {
-                 // if it is marked dead, skip it.
-                 if (ch.IsDead)
-                     continue;
-                 // send the object to the client handle
-                 SendObjectToClientHandle(ch);
-             }
+            // iterate the list of clients
+            foreach (ClientHandle ch in _clients)
+            {
+                // if it is marked dead, skip it.
+                if (ch.IsDead)
+                    continue;
+                // send the object to the client handle
+                SendObjectToClientHandle(ch);
+            }
             ClientGC();
         }
         #endregion
@@ -241,16 +241,16 @@ namespace RIXox
                     // check if there is data 
                     if (ns.DataAvailable)
                     {
-                        // Data from the client must be a RIXCommand.
+                        // Data from the client must be a RIOXCommand.
                         Object d = sf.Deserialize(ns);
-                        if(d.GetType() != typeof(RIXCommand))
+                        if(d.GetType() != typeof(RIOXCommand))
                         {
                             ch.TcpClient.Close();
                             ch.Thread.Abort();
                             throw new Exception("Received non-command data from client, connection closed.");                            
                         }
 
-                        RIXCommand r = (RIXCommand) d;
+                        RIOXCommand r = (RIOXCommand) d;
                         ns.Flush();
                         // fire the new object event
                         CommandEventArgs cea = new CommandEventArgs(r.Command, r.Data, ch.ClientId );
@@ -306,6 +306,6 @@ namespace RIXox
             }
             public ClientHandle() { IsDead = false; }
         }        
-#endregion
+        #endregion
     }
 }

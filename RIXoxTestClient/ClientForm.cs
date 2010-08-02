@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Windows.Forms;
-using RIXox;
+using RIOX;
 
 namespace RIXoxTestClient
 {
     public partial class ClientForm : Form
     {
         private RadioData _radio;
-        private RIXClient _client;
+        private RIOXClient _client;
 
         public ClientForm()
         {
@@ -16,11 +16,11 @@ namespace RIXoxTestClient
 
         private void button1_Click(object sender, EventArgs e)
         {
-            _client = new RIXClient(typeof(RadioData),"localhost", 1234);
+            _client = new RIOXClient(typeof(RadioData),"localhost", 1234);
             _client.ObjectReceivedEvent += ClientObjectReceivedEvent;
         }
 
-        void ClientObjectReceivedEvent(object o, RIXClient.ObjectReceivedEventArgs e)
+        void ClientObjectReceivedEvent(object o, RIOXClient.ObjectReceivedEventArgs e)
         {
             _radio = (RadioData) e.DataObject;
             Console.WriteLine("Object received: " + _radio);
@@ -56,7 +56,7 @@ namespace RIXoxTestClient
 
         private void button2_Click(object sender, EventArgs e)
         {
-            _client.SendCommand(new RIXCommand("VFOA", txtVFOA.Text));
+            _client.SendCommand(new RIOXCommand("VFOA", txtVFOA.Text));
         }
     }
 }

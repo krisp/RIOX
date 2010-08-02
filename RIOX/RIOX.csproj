@@ -37,9 +37,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RIXClient.cs" />
-    <Compile Include="RIXCommand.cs" />
-    <Compile Include="RIXServer.cs" />
+    <Compile Include="RIOXClient.cs" />
+    <Compile Include="RIOXCommand.cs" />
+    <Compile Include="RIOXServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

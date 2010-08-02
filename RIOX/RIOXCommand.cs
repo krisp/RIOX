@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace RIXox
+namespace RIOX
 {
     [Serializable()]
-    public class RIXCommand : ISerializable
+    public class RIOXCommand : ISerializable
     {
         public String Command { get; set; }
         public String Data { get; set; }        
 
-        public RIXCommand(String Command, String Data)
+        public RIOXCommand(String Command, String Data)
         {
             this.Command = Command;
             this.Data = Data;            
         }
 
-        public RIXCommand(SerializationInfo info, StreamingContext context)
+        public RIOXCommand(SerializationInfo info, StreamingContext context)
         {
             Command = (String) info.GetValue("Command", typeof (String));
             Data = (String)info.GetValue("Data", typeof(String));
@@ -27,6 +27,6 @@ namespace RIXox
             info.AddValue("Data", Data);            
         }
 
-        public RIXCommand() {}        
+        public RIOXCommand() {}        
     }
 }

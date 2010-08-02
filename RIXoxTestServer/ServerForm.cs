@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Windows.Forms;
-using RIXox;
+using RIOX;
 using RIXoxTestClient;
 
 namespace RIXoxTestServer
 {
     public partial class ServerForm : Form
     {
-        private RIXServer _server;
+        private RIOXServer _server;
         private RadioData _radio;
         private Timer _t;
 
@@ -32,7 +32,7 @@ namespace RIXoxTestServer
         
         private void button1_Click(object sender, EventArgs e)
         {
-            _server = new RIXServer(_radio, System.Net.IPAddress.Loopback, 1234);            
+            _server = new RIOXServer(_radio, System.Net.IPAddress.Loopback, 1234);            
             _server.CommandEvent += ServerCommandEvent;
             _radio.PropertyChanged += RadioPropertyChanged;
             _server.SendUpdatesAtInterval = false;
@@ -47,7 +47,7 @@ namespace RIXoxTestServer
             _server.SendObjectUpdate();
         }
 
-        void ServerCommandEvent(object sender, RIXServer.CommandEventArgs e)
+        void ServerCommandEvent(object sender, RIOXServer.CommandEventArgs e)
         {
             // command received
             Console.WriteLine("CommandEvent fired");

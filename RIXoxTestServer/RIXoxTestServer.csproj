@@ -85,9 +85,9 @@
       <Project>{D4644B13-71BE-48A9-B047-DEF99B8885E9}</Project>
       <Name>RIXoxTestClient</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RIXox\RIXox.csproj">
+    <ProjectReference Include="..\RIOX\RIOX.csproj">
       <Project>{EB2C16E8-EC7C-46C2-BC75-3716315D7378}</Project>
-      <Name>RIXox</Name>
+      <Name>RIOX</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
