@@ -24,8 +24,10 @@ namespace RIOX
 {
     public class RIOXClient
     {
+        // Event is fired every time an object is received
         public event ObjectReceivedEventHandler ObjectReceivedEvent;
 
+        // Expose TCPClient.Connected
         public bool IsConnected { 
             get 
             { 
@@ -35,18 +37,23 @@ namespace RIOX
             } 
         }
 
+        // typeof(DataObject)
         public Type DataType { get; set; }
 
         private TcpClient _client;
         private Thread _clientThread;
         private bool _stopThreads;
 
+        // Constructor requires the dataType, hostname, and port of the server
         public RIOXClient(Type dataType, String hostname, int port)
         {
             try
             {
-                _client = new TcpClient(hostname, port);     
+                // create the client
+                _client = new TcpClient(hostname, port);
+                // create the client thread
                 _clientThread = new Thread(ClientThread);
+                // start the client thread
                 _clientThread.Start(_client);
                 DataType = dataType;
             }
@@ -58,6 +65,8 @@ namespace RIOX
 
         public void SendCommand(RIOXCommand command)
         {
+            // Get the client's network stream and send
+            // the RIOXCommand
             NetworkStream ns = _client.GetStream();
             SoapFormatter sf = new SoapFormatter();
             sf.Serialize(ns, command);
@@ -66,22 +75,30 @@ namespace RIOX
                 
         private void ClientThread(object tcpClient)
         {
+            // TcpClient is passed to the thread on start
             TcpClient client = (TcpClient)tcpClient;
+            // Get the network stream from the client
             NetworkStream ns = client.GetStream();
+            // Create the SoapFormatter for the object
             SoapFormatter sf = new SoapFormatter();
             
+            // Loop until told to stop
             while (!_stopThreads)
             {
                 try
                 {
+                    // Check if there is any available data on the network stream
                     if (ns.DataAvailable)
                     {
+                        // Receive the data and deserialize it into an object
                         Object o = sf.Deserialize(ns);
+                        // Check if the object type is the correct type
                         if(o.GetType() != DataType)
                         {
                             throw new Exception("Object received does not match DataType");
                         }
                         ns.Flush();
+                        // Fire ObjectReceivedEvent, which should be captured in the client app
                         ObjectReceivedEvent(this, new ObjectReceivedEventArgs(o));
                     }                
                 }
