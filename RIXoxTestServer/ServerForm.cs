@@ -45,6 +45,7 @@ namespace RIXoxTestServer
             _radio.vfob = txtVFOB.Text;
             _radio.Mode = txtMode.Text;
             _radio.mox = cbMox.Checked;
+            _radio.Custom["preamp"] = "on";
         }
         
         private void button1_Click(object sender, EventArgs e)
@@ -52,6 +53,8 @@ namespace RIXoxTestServer
             _server = new RIOXServer(_radio, System.Net.IPAddress.Loopback, 1234);            
             _server.CommandEvent += ServerCommandEvent;
             _radio.PropertyChanged += RadioPropertyChanged;
+            _radio.Custom = new System.Collections.Hashtable();
+            _radio.Custom.Add("preamp", "off");
             _server.SendUpdatesAtInterval = false;
             _server.Start();
             TTick(null,null);

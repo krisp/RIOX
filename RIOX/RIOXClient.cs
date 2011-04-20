@@ -44,12 +44,17 @@ namespace RIOX
         private Thread _clientThread;
         private bool _stopThreads;
 
+        private String _hostname;
+        private int _port;
+
         // Constructor requires the dataType, hostname, and port of the server
         public RIOXClient(Type dataType, String hostname, int port)
         {
             try
             {
                 // create the client
+                _hostname = hostname;
+                _port = port;
                 _client = new TcpClient(hostname, port);
                 // create the client thread
                 _clientThread = new Thread(ClientThread);
@@ -61,6 +66,23 @@ namespace RIOX
             {                
                 throw new Exception("Could not connect to RIOXServer", e);
             }            
+        }
+
+        public void Connect()
+        {
+            try
+            {
+                _client.Connect(_hostname, _port);
+                if (_clientThread.IsAlive == false)
+                {
+                    _clientThread = new Thread(ClientThread);
+                    _clientThread.Start(_client);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Could not connect to RIOXServer", e);
+            }
         }
 
         public void SendCommand(RIOXCommand command)
@@ -99,7 +121,8 @@ namespace RIOX
                         }
                         ns.Flush();
                         // Fire ObjectReceivedEvent, which should be captured in the client app
-                        ObjectReceivedEvent(this, new ObjectReceivedEventArgs(o));
+                        if(ObjectReceivedEvent != null)
+                            ObjectReceivedEvent(this, new ObjectReceivedEventArgs(o));
                     }                
                 }
                 catch (Exception e)

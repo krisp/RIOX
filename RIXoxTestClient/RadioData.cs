@@ -18,6 +18,7 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
+using System.Collections;
 
 namespace RIXoxTestClient
 {
@@ -33,6 +34,8 @@ namespace RIXoxTestClient
         private bool _mox;
         [NonSerialized]
         private string _mode;
+        [NonSerialized]
+        private Hashtable _custom;
 
         public string vfoa { get { return _vfoa; } set { _vfoa = value; NotifyPropertyChanged("vfoa"); } }
         public string vfob { get { return _vfob; } set { _vfob = value; NotifyPropertyChanged("vfob"); } }
@@ -48,6 +51,8 @@ namespace RIXoxTestClient
         public string DSPFilter { get; set; }
         public string Preamp { get; set; }
 
+        public Hashtable Custom { get { return _custom; } set { _custom = value; NotifyPropertyChanged("custom"); } }
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
         {
@@ -58,7 +63,7 @@ namespace RIXoxTestClient
         }
 
         public RadioData()
-        {
+        {            
         }
 
         // This is for deserialization
@@ -68,6 +73,7 @@ namespace RIXoxTestClient
             vfob = (string)info.GetValue("vfob", typeof(string));
             Mode = (string)info.GetValue("mode", typeof(string));
             mox = (bool)info.GetValue("mox", typeof(bool));
+            Custom = (Hashtable)info.GetValue("custom", typeof(Hashtable));
         }
 
         // this is for serialization
@@ -76,7 +82,8 @@ namespace RIXoxTestClient
             info.AddValue("vfoa", vfoa);
             info.AddValue("vfob", vfob);
             info.AddValue("mode", Mode);
-            info.AddValue("mox", mox);            
+            info.AddValue("mox", mox);
+            info.AddValue("custom", Custom);
         }
 
         // this is just for testing

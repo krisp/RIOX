@@ -41,6 +41,7 @@ namespace RIXoxTestClient
         {
             _radio = (RadioData) e.DataObject;
             Console.WriteLine("Object received: " + _radio);
+            Console.WriteLine("Preamp: " + _radio.Custom["preamp"]);
             UpdateForm();
         }
 
