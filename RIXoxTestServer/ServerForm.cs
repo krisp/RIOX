@@ -52,6 +52,8 @@ namespace RIXoxTestServer
         {
             _server = new RIOXServer(_radio, System.Net.IPAddress.Loopback, 1234);            
             _server.CommandEvent += ServerCommandEvent;
+            _server.ClientConnectedEvent += new RIOXServer.ClientEventHandler(_server_ClientConnectedEvent);
+            _server.ClientDisconnectedEvent += new RIOXServer.ClientEventHandler(_server_ClientDisconnectedEvent);
             _radio.PropertyChanged += RadioPropertyChanged;
             _radio.Custom = new System.Collections.Hashtable();
             _radio.Custom.Add("preamp", "off");
@@ -59,6 +61,16 @@ namespace RIXoxTestServer
             _server.Start();
             TTick(null,null);
             Console.WriteLine("Server started");
+        }
+
+        void _server_ClientDisconnectedEvent(object sender, RIOXServer.ClientEventArgs e)
+        {
+            MessageBox.Show("Client disconnected");           
+        }
+
+        void _server_ClientConnectedEvent(object sender, RIOXServer.ClientEventArgs e)
+        {
+            MessageBox.Show("Client connected");
         }
 
         void RadioPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
