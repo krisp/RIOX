@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-
-/* This file is part of RIOX.
+﻿/* This file is part of RIOX.
    RIOX is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -26,8 +21,7 @@ using System.Runtime.Serialization;
 using System.Collections;
 
 namespace RIOX
-{
-    // this is the RadioData struct from MiniDeluxe
+{    
     [Serializable()]
     public class RIOXData : ISerializable, INotifyPropertyChanged
     {
