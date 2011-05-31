@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="RIOXClient.cs" />
     <Compile Include="RIOXCommand.cs" />
+    <Compile Include="RIOXData.cs" />
     <Compile Include="RIOXServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

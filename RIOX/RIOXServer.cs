@@ -27,6 +27,8 @@ namespace RIOX
     public class RIOXServer
     {
         public event CommandEventHandler CommandEvent;
+        public event ClientEventHandler ClientConnectedEvent;
+        public event ClientEventHandler ClientDisconnectedEvent;
        
         public int ClientCount { get { return _clients.Count; } }
         public bool IsStarted { get; private set; }
@@ -155,6 +157,8 @@ namespace RIOX
                     Thread t = new Thread(ClientThread);
                     // Create a client handle to store the thread and the client, and give it the next id.
                     ClientHandle ch = new ClientHandle(t, c, _clientIdNext++);
+                    if(ClientConnectedEvent !=  null)
+                        ClientConnectedEvent(this, new ClientEventArgs(c, ch.ClientId));
                     // start the client thread, and pass the client handle to the new thread.
                     t.Start(ch);
                     // send the latest object to the client
@@ -190,6 +194,9 @@ namespace RIOX
             {
                 // client is disconnected, mark for removal
                 Console.WriteLine("Client is disconnected, marking for removal.");
+                // TODO: Fire an event for the disconnected client
+                if(ClientDisconnectedEvent != null)                
+                    ClientDisconnectedEvent(this, new ClientEventArgs(ch.TcpClient, ch.ClientId));                
                 ch.IsDead = true;
                 return;
             }
@@ -293,7 +300,24 @@ namespace RIOX
         #endregion
 
         #region Event declarations
+
+        public delegate void ClientEventHandler(object sender, ClientEventArgs e);
         public delegate void CommandEventHandler(object sender, CommandEventArgs e);
+
+        public class ClientEventArgs : EventArgs
+        {
+            public TcpClient TcpClient { get; set; }            
+            public int ClientId { get; set; }
+
+            public ClientEventArgs(TcpClient client, int clientId)
+            {
+                TcpClient = client;                
+                ClientId = clientId;
+            }
+
+            public ClientEventArgs() { }
+        }
+
         public class CommandEventArgs : EventArgs
         {
             public String Command { get; set; }
