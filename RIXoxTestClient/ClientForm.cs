@@ -23,25 +23,26 @@ namespace RIXoxTestClient
 {
     public partial class ClientForm : Form
     {
-        private RadioData _radio;
+        private RIOXData _data;
         private RIOXClient _client;
 
         public ClientForm()
-        {
+        {            
             InitializeComponent();            
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            _client = new RIOXClient(typeof(RadioData),"localhost", 1234);
+            _data = new RIOXData();           
+            _client = new RIOXClient(typeof(RIOXData),"localhost", 1234);
             _client.ObjectReceivedEvent += ClientObjectReceivedEvent;
         }
 
         void ClientObjectReceivedEvent(object o, RIOXClient.ObjectReceivedEventArgs e)
         {
-            _radio = (RadioData) e.DataObject;
-            Console.WriteLine("Object received: " + _radio);
-            Console.WriteLine("Preamp: " + _radio.Custom["preamp"]);
+            _data = (RIOXData) e.DataObject;
+            Console.WriteLine("Object received: " + _data);
+            // Console.WriteLine("Preamp: " + _radio.Custom["preamp"]);
             UpdateForm();
         }
 
@@ -51,18 +52,18 @@ namespace RIXoxTestClient
             {
                 Invoke((MethodInvoker) delegate
                                            {
-                                               txtMode.Text = _radio.Mode;
-                                               txtVFOA.Text = _radio.vfoa;
-                                               txtVFOB.Text = _radio.vfob;
-                                               cbMox.Checked = _radio.mox;
+                                               txtMode.Text = (String)_data.Data["mode"];
+                                               txtVFOA.Text = (String)_data.Data["vfoa"];
+                                               txtVFOB.Text = (String)_data.Data["vfob"];
+                                               cbMox.Checked = (bool)_data.Data["mox"];
                                            });
             }
             else
             {
-                txtMode.Text = _radio.Mode;
-                txtVFOA.Text = _radio.vfoa;
-                txtVFOB.Text = _radio.vfob;
-                cbMox.Checked = _radio.mox;                
+                txtMode.Text = (String)_data.Data["mode"];
+                txtVFOA.Text = (String)_data.Data["vfoa"];
+                txtVFOB.Text = (String)_data.Data["vfob"];
+                cbMox.Checked = (bool)_data.Data["mox"];       
             }
         }
 

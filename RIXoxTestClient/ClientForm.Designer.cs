@@ -38,9 +38,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.radioDataBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            
             this.button2 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.radioDataBindingSource)).BeginInit();
+
             this.SuspendLayout();
             // 
             // cbMox
@@ -117,11 +117,7 @@
             this.button1.TabIndex = 17;
             this.button1.Text = "Start Client";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // radioDataBindingSource
-            // 
-            this.radioDataBindingSource.DataSource = typeof(RIXoxTestClient.RadioData);
+            this.button1.Click += new System.EventHandler(this.button1_Click);            
             // 
             // button2
             // 
@@ -148,11 +144,11 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.radioDataBindingSource, "vfob", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+
             this.Name = "ClientForm";
             this.Text = "Form1";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ClientForm_FormClosed);
-            ((System.ComponentModel.ISupportInitialize)(this.radioDataBindingSource)).EndInit();
+
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -169,7 +165,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.BindingSource radioDataBindingSource;
+
         private System.Windows.Forms.Button button2;
     }
 }

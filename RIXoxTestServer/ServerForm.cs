@@ -25,13 +25,17 @@ namespace RIXoxTestServer
     public partial class ServerForm : Form
     {
         private RIOXServer _server;
-        private RadioData _radio;
+        private RIOXData _data;
         private Timer _t;
 
         public ServerForm()
         {
             InitializeComponent();
-            _radio = new RadioData();
+            _data = new RIOXData();
+            _data.Data.Add("vfoa", "14.200");
+            _data.Data.Add("vfob", "7.000");
+            _data.Data.Add("mode", "USB");
+            _data.Data.Add("mox", false);
             
             _t = new Timer {Interval = 250};
             _t.Tick += TTick;
@@ -41,22 +45,19 @@ namespace RIXoxTestServer
         
         void TTick(object sender, EventArgs e)
         {
-            _radio.vfoa = txtVFOA.Text;
-            _radio.vfob = txtVFOB.Text;
-            _radio.Mode = txtMode.Text;
-            _radio.mox = cbMox.Checked;
-            _radio.Custom["preamp"] = "on";
+            _data.Data["vfoa"] = txtVFOA.Text;
+            _data.Data["vfob"] = txtVFOB.Text;
+            _data.Data["Mode"] = txtMode.Text;
+            _data.Data["mox"] = cbMox.Checked;
         }
         
         private void button1_Click(object sender, EventArgs e)
         {
-            _server = new RIOXServer(_radio, System.Net.IPAddress.Loopback, 1234);            
+            _server = new RIOXServer(_data, System.Net.IPAddress.Loopback, 1234);            
             _server.CommandEvent += ServerCommandEvent;
             _server.ClientConnectedEvent += new RIOXServer.ClientEventHandler(_server_ClientConnectedEvent);
             _server.ClientDisconnectedEvent += new RIOXServer.ClientEventHandler(_server_ClientDisconnectedEvent);
-            _radio.PropertyChanged += RadioPropertyChanged;
-            _radio.Custom = new System.Collections.Hashtable();
-            _radio.Custom.Add("preamp", "off");
+            _data.PropertyChanged += RadioPropertyChanged;
             _server.SendUpdatesAtInterval = false;
             _server.Start();
             TTick(null,null);
@@ -90,22 +91,26 @@ namespace RIXoxTestServer
         private void txtVFOA_TextChanged(object sender, EventArgs e)
         {
             //Console.WriteLine("Text changed");
-            _radio.vfoa = txtVFOA.Text;
+            _data.Data["vfoa"] = txtVFOA.Text;
+            _server.SendObjectUpdate();
         }
 
         private void txtVFOB_TextChanged(object sender, EventArgs e)
         {
-            _radio.vfob = txtVFOB.Text;
+            _data.Data["vfob"] = txtVFOB.Text;
+            _server.SendObjectUpdate();
         }
 
         private void txtMode_TextChanged(object sender, EventArgs e)
         {
-            _radio.Mode = txtMode.Text;
+            _data.Data["mode"] = txtMode.Text;
+            _server.SendObjectUpdate();
         }
 
         private void cbMox_CheckedChanged(object sender, EventArgs e)
         {
-            _radio.mox = cbMox.Checked;
+            _data.Data["mox"] = cbMox.Checked;
+            _server.SendObjectUpdate();
         }
 
         private void ServerForm_FormClosed(object sender, FormClosedEventArgs e)

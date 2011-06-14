@@ -100,7 +100,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="RadioData.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RIOX\RIOX.csproj">
