@@ -52,18 +52,18 @@ namespace RIXoxTestClient
             {
                 Invoke((MethodInvoker) delegate
                                            {
-                                               txtMode.Text = (String)_data.Data["mode"];
-                                               txtVFOA.Text = (String)_data.Data["vfoa"];
-                                               txtVFOB.Text = (String)_data.Data["vfob"];
-                                               cbMox.Checked = (bool)_data.Data["mox"];
+                                               txtMode.Text = (String)_data["mode"];
+                                               txtVFOA.Text = (String)_data["vfoa"];
+                                               txtVFOB.Text = (String)_data["vfob"];
+                                               cbMox.Checked = (bool)_data["mox"];
                                            });
             }
             else
             {
-                txtMode.Text = (String)_data.Data["mode"];
-                txtVFOA.Text = (String)_data.Data["vfoa"];
-                txtVFOB.Text = (String)_data.Data["vfob"];
-                cbMox.Checked = (bool)_data.Data["mox"];       
+                txtMode.Text = (String)_data["mode"];
+                txtVFOA.Text = (String)_data["vfoa"];
+                txtVFOB.Text = (String)_data["vfob"];
+                cbMox.Checked = (bool)_data["mox"];       
             }
         }
 

@@ -31,11 +31,11 @@ namespace RIXoxTestServer
         public ServerForm()
         {
             InitializeComponent();
-            _data = new RIOXData();
-            _data.Data.Add("vfoa", "14.200");
-            _data.Data.Add("vfob", "7.000");
-            _data.Data.Add("mode", "USB");
-            _data.Data.Add("mox", false);
+            _data = new RIOXData();            
+            _data.Add("vfoa", "14.200");
+            _data.Add("vfob", "7.000");
+            _data.Add("mode", "USB");
+            _data.Add("mox", false);
             
             _t = new Timer {Interval = 250};
             _t.Tick += TTick;
@@ -45,10 +45,10 @@ namespace RIXoxTestServer
         
         void TTick(object sender, EventArgs e)
         {
-            _data.Data["vfoa"] = txtVFOA.Text;
-            _data.Data["vfob"] = txtVFOB.Text;
-            _data.Data["Mode"] = txtMode.Text;
-            _data.Data["mox"] = cbMox.Checked;
+            _data["vfoa"] = txtVFOA.Text;
+            _data["vfob"] = txtVFOB.Text;
+            _data["mode"] = txtMode.Text;
+            _data["mox"] = cbMox.Checked;
         }
         
         private void button1_Click(object sender, EventArgs e)
@@ -89,28 +89,23 @@ namespace RIXoxTestServer
         }
 
         private void txtVFOA_TextChanged(object sender, EventArgs e)
-        {
-            //Console.WriteLine("Text changed");
-            _data.Data["vfoa"] = txtVFOA.Text;
-            _server.SendObjectUpdate();
+        {            
+            _data["vfoa"] = txtVFOA.Text;            
         }
 
         private void txtVFOB_TextChanged(object sender, EventArgs e)
         {
-            _data.Data["vfob"] = txtVFOB.Text;
-            _server.SendObjectUpdate();
+            _data["vfob"] = txtVFOB.Text;            
         }
 
         private void txtMode_TextChanged(object sender, EventArgs e)
         {
-            _data.Data["mode"] = txtMode.Text;
-            _server.SendObjectUpdate();
+            _data["mode"] = txtMode.Text;            
         }
 
         private void cbMox_CheckedChanged(object sender, EventArgs e)
         {
-            _data.Data["mox"] = cbMox.Checked;
-            _server.SendObjectUpdate();
+            _data["mox"] = cbMox.Checked;            
         }
 
         private void ServerForm_FormClosed(object sender, FormClosedEventArgs e)
