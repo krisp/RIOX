@@ -22,13 +22,26 @@ using System.Collections;
 
 namespace RIOX
 {    
-    [Serializable()]
-    public class RIOXData : ISerializable, INotifyPropertyChanged
-    {
-        [NonSerialized]
-        private Hashtable _data;
 
-        public Hashtable Data { get { return _data; } set { _data = value; NotifyPropertyChanged("data"); } }
+    [Serializable()]
+    public class RIOXData : Hashtable, INotifyPropertyChanged
+    {        
+        public override object this[object key]
+        {
+            get
+            {
+                return base[key];
+            }
+            set
+            {
+                base[key] = value;
+                NotifyPropertyChanged(key.ToString());
+            }
+        }
+
+        public RIOXData() { }
+
+        protected RIOXData(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
@@ -37,23 +50,6 @@ namespace RIOX
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
-        }
-
-        public RIOXData()
-        {
-            _data = new Hashtable();            
-        }
-
-        // This is for deserialization
-        public RIOXData(SerializationInfo info, StreamingContext context)
-        {
-             Data = (Hashtable)info.GetValue("data", typeof(Hashtable));
-        }
-
-        // this is for serialization
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("data", Data);
         }
     }
 }
