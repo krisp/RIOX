@@ -62,7 +62,7 @@ namespace RIOX
             }
             catch (Exception e)
             {
-                throw new Exception("Unable to create RIX server: " + e.Message, e);
+                throw new Exception("Unable to create RIOX server: " + e.Message, e);
             }            
         }
 
