@@ -41,6 +41,7 @@ namespace RIOX
 
         public RIOXData()
         {
+            _data = new Hashtable();            
         }
 
         // This is for deserialization
