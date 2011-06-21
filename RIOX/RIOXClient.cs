@@ -50,6 +50,7 @@ namespace RIOX
         private String _hostname;
         private int _port;
         private Timer _t;
+        private bool _disconnectedEventFired = false;
 
         // Constructor requires the dataType, hostname, and port of the server
         public RIOXClient(Type dataType, String hostname, int port)
@@ -57,6 +58,7 @@ namespace RIOX
             try
             {
                 // create the client
+                _disconnectedEventFired = false;
                 _hostname = hostname;
                 _port = port;
                 _client = new TcpClient(hostname, port);                
@@ -77,6 +79,7 @@ namespace RIOX
         {
             try
             {
+                _disconnectedEventFired = false;
                 _client.Connect(_hostname, _port);
                 _t = new Timer(TTick, null, 0, 5000);                
                 if (_clientThread.IsAlive == false)
@@ -102,8 +105,9 @@ namespace RIOX
                 catch(Exception)
                 {
                     // unable to send ping command, server must be disconnected
-                    if (ServerDisconnectedEvent != null)
+                    if (ServerDisconnectedEvent != null && !_disconnectedEventFired)
                         ServerDisconnectedEvent(this, new EventArgs());
+                    _disconnectedEventFired = true;
                     _t.Dispose();
                 }
             }
@@ -122,8 +126,9 @@ namespace RIOX
             }
             catch (Exception)
             {
-                if (ServerDisconnectedEvent != null)
+                if (ServerDisconnectedEvent != null && !_disconnectedEventFired)
                     ServerDisconnectedEvent(this, new EventArgs());
+                _disconnectedEventFired = true;
                 _stopThreads = true;
                 _client.Close();
             }
@@ -156,21 +161,23 @@ namespace RIOX
                         ns.Flush();
                         // Fire ObjectReceivedEvent, which should be captured in the client app
                         if (ObjectReceivedEvent != null)
-                            ObjectReceivedEvent(this, new ObjectReceivedEventArgs(o));
+                            ObjectReceivedEvent(this, new ObjectReceivedEventArgs(o));                        
                     }
                 }
                 catch (System.IO.IOException)
                 {
                     // occurs when a read times out
-                    if (ServerDisconnectedEvent != null)
+                    if (ServerDisconnectedEvent != null && !_disconnectedEventFired)
                         ServerDisconnectedEvent(this, new EventArgs());
+                    _disconnectedEventFired = true;
                     client.Close();
                 }
                 catch (SocketException)
                 {
                     // should occur when disconnected
-                    if (ServerDisconnectedEvent != null)
+                    if (ServerDisconnectedEvent != null && !_disconnectedEventFired)
                         ServerDisconnectedEvent(this, new EventArgs());
+                    _disconnectedEventFired = true;
                     client.Close();
                 }
                 catch (Exception e)

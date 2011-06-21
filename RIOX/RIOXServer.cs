@@ -283,8 +283,8 @@ namespace RIOX
                         ns.Flush();
                         // check if the command is an internal ping and discard
                         // this is used by the client to test if it is connected
-                        if (r.Command == "__PING")
-                            return;
+                        if (r.Command.Equals("__PING"))
+                            continue;
                         // fire the new object event
                         CommandEventArgs cea = new CommandEventArgs(r.Command, r.Data, ch.ClientId );
                         CommandEvent(this, cea);
