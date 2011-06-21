@@ -36,6 +36,12 @@ namespace RIXoxTestClient
             _data = new RIOXData();           
             _client = new RIOXClient(typeof(RIOXData),"localhost", 1234);
             _client.ObjectReceivedEvent += ClientObjectReceivedEvent;
+            _client.ServerDisconnectedEvent += new EventHandler(_client_ServerDisconnectedEvent);
+        }
+
+        void _client_ServerDisconnectedEvent(object sender, EventArgs e)
+        {
+            MessageBox.Show("Server has disconnected");
         }
 
         void ClientObjectReceivedEvent(object o, RIOXClient.ObjectReceivedEventArgs e)
