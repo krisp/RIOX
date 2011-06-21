@@ -41,7 +41,7 @@ namespace RIOX
         private ArrayList _clients;
         private bool _stopThreads;
         private int _clientIdNext;
-        private Timer _objectUpdateTimer;        
+        private Timer _objectUpdateTimer;
 
         // Constructor. Requires a serializable dataObject, and ip address to bind to, and a port to listen on.
         public RIOXServer(Object dataObject, IPAddress bindAddress, int port)
@@ -281,6 +281,10 @@ namespace RIOX
 
                         RIOXCommand r = (RIOXCommand) d;
                         ns.Flush();
+                        // check if the command is an internal ping and discard
+                        // this is used by the client to test if it is connected
+                        if (r.Command == "__PING")
+                            return;
                         // fire the new object event
                         CommandEventArgs cea = new CommandEventArgs(r.Command, r.Data, ch.ClientId );
                         CommandEvent(this, cea);
