@@ -124,6 +124,10 @@ namespace RIOX
                 sf.Serialize(ns, command);
                 ns.Flush();
             }
+            catch (System.Xml.XmlException xmle)
+            {
+                Console.WriteLine("SendCommand: EXCEPTION: " + xmle.Message);
+            }
             catch (Exception)
             {
                 if (ServerDisconnectedEvent != null && !_disconnectedEventFired)
@@ -163,6 +167,11 @@ namespace RIOX
                         if (ObjectReceivedEvent != null)
                             ObjectReceivedEvent(this, new ObjectReceivedEventArgs(o));                        
                     }
+                }
+                catch (System.Xml.XmlException xmle)
+                {
+                    // this is occuring for some reason in some configurations. Lets try ignoring it.
+                    Console.WriteLine("ClientThread: EXCEPTION: " + xmle.Message);
                 }
                 catch (System.IO.IOException)
                 {

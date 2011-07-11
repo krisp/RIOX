@@ -211,25 +211,29 @@ namespace RIOX
                 // Serialize the object into the TcpClient stream. This sends the object to the client.
                 sf.Serialize(ch.TcpClient.GetStream(), DataObject);
                 // Flush the stream
-                ch.TcpClient.GetStream().Flush();                                   
+                ch.TcpClient.GetStream().Flush();
             }
             catch (System.IO.IOException)
             {
                 // IO/socket exceptions mean that the intended client is probably dead, so lets remove
                 // the client from our list.
                 if (ClientDisconnectedEvent != null)
-                    ClientDisconnectedEvent(this, new ClientEventArgs(ch.TcpClient, ch.ClientId));  
+                    ClientDisconnectedEvent(this, new ClientEventArgs(ch.TcpClient, ch.ClientId));
                 ch.IsDead = true;
             }
             catch (SocketException)
             {
                 if (ClientDisconnectedEvent != null)
-                    ClientDisconnectedEvent(this, new ClientEventArgs(ch.TcpClient, ch.ClientId));  
+                    ClientDisconnectedEvent(this, new ClientEventArgs(ch.TcpClient, ch.ClientId));
                 ch.IsDead = true;
             }
-            catch(Exception e)
+            catch (System.Xml.XmlException xmle)
             {
-                throw new Exception("Error sending object to client: "+ e.Message, e);   
+                Console.WriteLine("SendObjectToClientHandle: EXCEPTION: " + xmle.Message);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error sending object to client: " + e.Message, e);
             }
         }
 
@@ -295,6 +299,10 @@ namespace RIOX
                     if (ClientDisconnectedEvent != null)
                         ClientDisconnectedEvent(this, new ClientEventArgs(ch.TcpClient, ch.ClientId));  
                     ch.IsDead = true;
+                }
+                catch (System.Xml.XmlException xmle)
+                {
+                    Console.WriteLine("ClientThread: EXCEPTION: " + xmle.Message);
                 }
                 catch (Exception e)
                 {
